@@ -88,10 +88,10 @@ def calculate_accuracy(y_true, y_pred):
     rmse = math.sqrt(mse)
     return mae, mse, rmse
 
-def options_pricing():
-    xle = yf.Ticker("XLE")
-    opt = xle.option_chain(date= )
-    return opt.puts
+#def options_pricing():
+    #xle = yf.Ticker("XLE")
+    #opt = xle.option_chain(date= )
+    #return opt.puts
 
 
 # Streamlit app
@@ -118,8 +118,7 @@ def main():
     # Options section
     expiration_target = st.sidebar.date_input("Enter the expiration target date:", format = 'YYYY-MM-DD')
     strike_target = st.sidebar.slider("Enter percentage to hedge", .05, .1, .07)
-    if st.sidebar.button("Diplay Options Chain"):
-        st.write(options_pricing())
+
     
     # Predict prices based on user's choice of model
     predicted_prices_df = predict_prices(energy, prediction_days, model_choice)
@@ -131,7 +130,7 @@ def main():
 
     st.subheader("Portfolio Information")
     st.write(f"The current price of the asset is: ${current_price:.2f}")
-
+    st.write(f"Predicted price in {prediction_days} days is: ${round(predicted_prices_df['Predicted Price'].iloc[-1], 2)}")
     # Calculate accuracy metrics
     #y_true = energy['XLE'].values[-prediction_days:]
     #y_pred = predicted_prices_df['Predicted Price'].values
@@ -150,11 +149,11 @@ def main():
     # Stock Price
     S = energy['XLE'][249]
     # Time to Expiration
-    T = 90
+    T = prediction_days
     # Risk free return
-    r = .04
+    r = .045
     # Strike price for hedging
-    K = round(S*(1-strike_target))
+    K = math.floor(S*(1-strike_target))
     #volatility
     sigma = energy['XLE'][150:249].std()
 
@@ -172,15 +171,33 @@ def main():
     EMV = predicted_change * predictive_power
     opt_price = price * shares
     hedge = EMV - opt_price
-
+    
+    
+   
+    last_price = 0
+    
+    # Options Section
+    st.subheader("Options Analysis")
+    st.write(f"Fair market price for the contract should be close to ${round(price, 2)} per contract")
+    st.write(f"Target Hedge Strike Price is ${K}")
+    if st.sidebar.button("Display Options Chain"):
+        xle = yf.Ticker("XLE")
+        opt = xle.option_chain(date= (f"{expiration_target}"))
+        chain = opt.puts
+        st.write(chain[10:30])
+        last_price = chain[chain['strike'] == K]['lastPrice']
+        
+        
     # Display portfolio analysis
     st.subheader("Portfolio Analysis")
     st.write(f"The current portfolio value is: ${portfolio_value:.2f}")
-    st.write(f"Predicted price in {prediction_days} days is: ${round(predicted_prices_df['Predicted Price'].iloc[-1], 2)}")
-    st.write(f"Expected Change in Portfolio Value: ${predicted_change:.2f}")
-    st.write(f"Expected Monetary Value (EMV): ${EMV:.2f}")
-    st.write(f"Option Price: ${opt_price:.2f}")
+    st.write(f"Expected Change in Portfolio Value: ${-predicted_change:.2f}")
+    st.write(f"Expected Monetary Value (EMV): ${-EMV:.2f}")
+    st.write(f"Option Price: ${float(last_price)*100}")
     st.write(f"Hedge: ${hedge:.2f}")
+
+
+        
 
 if __name__ == "__main__":
     main()
