@@ -54,7 +54,10 @@ def predict_prices(energy, prediction_days, model_choice):
         elif model_choice == 'Random Forest':
             model = RandomForestRegressor()
         elif model_choice == 'Neural Network':
-            model = MLPRegressor(random_state=1) 
+            model = MLPRegressor(hidden_layer_sizes=(100, 50),
+                                 activation='relu',
+                                 solver='adam',
+                                 random_state=1) # Longer Processing time
 
         # Fit the model
         model.fit(X_scaled, y)
@@ -86,6 +89,7 @@ def calculate_accuracy(y_true, y_pred):
     rmse = math.sqrt(mse)
     return mae, mse, rmse
 
+
 # Streamlit app
 def main():
     st.title("Energy Sector ETF Prediction and Risk Analysis")
@@ -95,16 +99,14 @@ def main():
 
     # Sidebar for user input
     st.sidebar.header("User Input")
-    shares = st.sidebar.number_input("Enter the number of shares:", value=100)
-    expiration_target = st.sidebar.number_input("Enter the expiration target (in days):", value=90)
+    shares = st.sidebar.number_input("Enter the number of shares:", value=100, step=100)
+    
     # Dropdown for model choice
     model_choice = st.sidebar.selectbox("Choose a prediction model", ["Linear Regression", 
                                                                       "Random Forest", 
-                                                                      "Neural Network"])
+                                                                      "Neural Network",]) # Longer Processing time
     # Slider for predictions
     prediction_days = st.sidebar.slider("Number of days for prediction", 1, 365, 90)
-
-    
 
     # Predict prices based on user's choice of model
     predicted_prices_df = predict_prices(energy, prediction_days, model_choice)
@@ -114,8 +116,15 @@ def main():
     current_price = energy.loc[current_day, 'XLE']
     portfolio_value = shares * current_price
 
+    # Display current price and predicted prices
     st.subheader("Portfolio Information")
     st.write(f"The current price of the asset is: ${current_price:.2f}")
+    st.write(f"Predicted price in {prediction_days} days is: ${round(predicted_prices_df['Predicted Price'].iloc[-1], 2)}")
+    
+    # Plot predicted prices
+    st.subheader("Predicted Prices")
+    st.line_chart(predicted_prices_df.set_index('Date'))
+    
 
     # Calculate accuracy metrics
     #y_true = energy['XLE'].values[-prediction_days:]
@@ -127,19 +136,18 @@ def main():
     #st.write(f"Mean Squared Error (MSE): {mse:.2f}")
     #st.write(f"Root Mean Squared Error (RMSE): {rmse:.2f}")
 
-    # Display predicted prices
-    st.subheader("Predicted Prices")
-    st.line_chart(predicted_prices_df.set_index('Date'))
+    # Options section
+    expiration_target = st.sidebar.date_input("Enter the expiration target date:", format = 'YYYY-MM-DD')
+    strike_target = st.sidebar.slider("Enter percentage to hedge", .05, .1, .07)
     
-    
-    # Stock Price
+# Stock Price
     S = energy['XLE'][249]
     # Time to Expiration
-    T = 90
+    T = prediction_days
     # Risk free return
-    r = .04
+    r = .045
     # Strike price for hedging
-    K = round(S*.95)
+    K = math.floor(S*(1-strike_target))
     #volatility
     sigma = energy['XLE'][150:249].std()
 
@@ -157,14 +165,34 @@ def main():
     EMV = predicted_change * predictive_power
     opt_price = price * shares
     hedge = EMV - opt_price
-
+    
+    
+   
+    last_price = 0
+    
+    # Options Section
+    st.subheader("Options Analysis")
+    st.write(f"Fair market price for the contract should be close to ${round(price, 2)} per contract")
+    st.write(f"Target Hedge Strike Price is ${K}")
+    if st.sidebar.button("Display Options Chain"):
+        xle = yf.Ticker("XLE")
+        opt = xle.option_chain(date= (f"{expiration_target}"))
+        chain = opt.puts
+        st.write(chain[10:30])
+        last_price = chain[chain['strike'] == K]['lastPrice']
+        
+        
     # Display portfolio analysis
     st.subheader("Portfolio Analysis")
     st.write(f"The current portfolio value is: ${portfolio_value:.2f}")
-    st.write(f"Expected Change in Portfolio Value: ${predicted_change:.2f}")
-    st.write(f"Expected Monetary Value (EMV): ${EMV:.2f}")
-    st.write(f"Option Price: ${opt_price:.2f}")
+    st.write(f"Expected Change in Portfolio Value: ${-predicted_change:.2f}")
+    st.write(f"Expected Monetary Value (EMV): ${-EMV:.2f}")
+    st.write(f"Option Price: ${float(last_price)*100}")
     st.write(f"Hedge: ${hedge:.2f}")
+
+
+        
 
 if __name__ == "__main__":
     main()
+
