@@ -1,11 +1,11 @@
-# OptionsHedgingXLE# Stock Price Prediction Python Project
-This Python project aims to predict stock prices using machine learning techniques. The project utilizes historical stock price data, options data, and energy commodity prices to train a predictive model. The prediction model is built using TensorFlow and Keras libraries, and the data is fetched from various sources including Alpaca API, Yahoo Finance, and Yahoo Finance Options.
+# Stock Price Prediction Python Project
+## Hedging XLE with put options
 
 # Purpose
-The purpose of this project is to develop a predictive model for stock prices, specifically focusing on the energy sector represented by the ticker symbol "XLE." By analyzing historical data and employing machine learning algorithms, the project endeavors to forecast future price movements, aiding investors in making informed decisions.
+The purpose of this project is to develop a predictive model for stock prices, specifically focusing on the energy sector represented by the ticker symbol "XLE", then use that prediction to hedge a down position with a put option. It will allow dynamic pricing and machile learning models, with output that will help a user make an informed decision to hedge their portfolio using EMV risk analysis. 
 
 # Algorithm Used
-The algorithm used in this project is a deep neural network regression model implemented using TensorFlow and Keras. The model architecture consists of multiple dense layers with ReLU activation functions. The model is trained to minimize the mean squared error loss function, and the Adam optimizer is used for optimization.
+The algorithms used in this project are 1) deep neural network regression model implemented using TensorFlow and Keras, 2) Standard Linear Regression, and 3) random forest regression. The neural network model architecture consists of multiple dense layers with ReLU activation functions. The model is trained to minimize the mean squared error loss function, and the Adam optimizer is used for optimization.
 
 # Steps Involved
 1.	Data Collection: Historical stock price data is collected from the Alpaca API, options data is fetched using Yahoo Finance Options, and energy commodity prices are obtained from Yahoo Finance.
@@ -14,15 +14,9 @@ The algorithm used in this project is a deep neural network regression model imp
 4.	Model Training: The model is trained on the training dataset using the Adam optimizer and mean squared error loss function.
 5.	Model Evaluation: The trained model is evaluated on the testing dataset to assess its performance using the mean squared error metric.
 6.	Visualization: Various visualizations such as training and validation loss plots, actual vs predicted stock price plots, energy prices plots, and standard deviation plots are generated to analyze the results.
+7.	Pricing out options for hedging
+8.	Finding the EMV predicted loss
 
-# Features
-<ul>
-  <li>Data Retrieval: Utilizes APIs and libraries such as Yahoo Finance, Alpaca Trade API, and Yahoo_fin to fetch historical stock data.</li>
-  <li>Options Data Analysis: Extracts and analyzes options data using Yahoo_fin library to identify potential market trends.</li>
-  <li>Energy Prices Comparison: Compares and analyzes the spot prices of crude oil, natural gas, and coal alongside stock prices for comprehensive insights.</li>
-  <li>Machine Learning Model: Constructs a machine learning model using TensorFlow and Keras to predict future stock prices based on historical data.</li>
-  <li>Visualization: Employs visualization libraries such as Matplotlib and HoloViews to visualize stock prices, percentage changes, and standard deviations for better understanding and analysis.</li>
-</ul>
 
 # Installation
 Clone the repo first with git clone URl of the repo. <br>
@@ -64,6 +58,8 @@ This project is licensed under the MIT License. See the LICENSE file for details
   <li><a href="https://pypi.org/project/yahoo-fin/">Yahoo_fin</a></li>
   <li><a href="https://www.tensorflow.org/">TensorFlow</a></li>
   <li><a href="http://holoviews.org/">HoloViews</a></li>
+  <li><a https://www.tidy-finance.org/python/option-pricing-via-machine-learning.html
+  <li><a https://www.4pmti.com/learn/expected-monetary-value-emv-pmp-guide/
 </ul>
 <img src="https://github.com/pks891618/readmefile/assets/46920172/7ba45808-d8c6-4ce1-8f43-ec54a838efde" alt="Image1" style="width: 400px; height: 300px;" />
 <img src="https://github.com/pks891618/readmefile/assets/46920172/b92874a7-c1ca-4ecc-bc4e-ff4ba41c351c" alt="Image2" style="width: 400px; height: 300px;" />
