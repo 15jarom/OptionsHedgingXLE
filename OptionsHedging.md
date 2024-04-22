@@ -25,9 +25,6 @@ By integrating predictive models with risk analysis techniques, the Energy Optio
 ![NN Options](Images/neural_network_chain.png)
 
 ## Average of all Models
-![Average of all Models](Images/linear_regression.png)
-
-## Average of all Models
 ![Average of all Models](Images/average_of_all.png)
 ![Average Options](Images/average_of_all_chain.png)
 
