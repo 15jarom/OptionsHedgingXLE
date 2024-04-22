@@ -12,17 +12,23 @@ Additionally, the application utilizes the Expected Monetary Value (EMV) formula
 
 By integrating predictive models with risk analysis techniques, the Energy Options Hedging application offers users comprehensive insights into optimal hedging strategies tailored to their specific positions and market conditions. This approach ensures that users can make well-informed decisions to manage and mitigate risks effectively in the dynamic energy market landscape.
 
-## Linear Regression Prediction Model
+## Linear Regression
 ![Linear Regression](Images/linear_regression.png)
 ![LR Options](Images/linear_regression_options.png)
 
-## Random Forest Prediction Model
+## Random Forest
 ![Random Forest](Images/random_forest.png)
 ![RF Options](Images/random_forest_chain.png)
 
-## Neural Network Prediction Model
+## Neural Network
 ![Neural Network](Images/neural_network.png)
 ![NN Options](Images/neural_network_chain.png)
+
+## Prophet Seasonality
+![Prophet Trends](Images/prophet_trends.png)
+![Prophet Weekly](Images/prophet_weekly.png)
+![Prophet Yearly](Images/prophet_yearly.png)
+
 
 ## Team
 Jarom Lemmon
