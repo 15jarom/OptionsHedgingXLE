@@ -154,7 +154,10 @@ def neural_network_prediction(energy, prediction_days):
     # Return predicted DataFrame
     return predicted_prices_df
 
+# Average of all functin
 def average_of_all_predictions(energy, prediction_days):
+     
+    # Run all 3 predictive models and store the results in variables
     linear_pred = linear_regression_prediction(energy, prediction_days)['Predicted Price']
     rf_pred = random_forest_prediction(energy, prediction_days)['Predicted Price']
     nn_pred = neural_network_prediction(energy, prediction_days)['Predicted Price']
@@ -164,11 +167,16 @@ def average_of_all_predictions(energy, prediction_days):
     
     # Create DataFrame to store the average predictions
     predicted_prices_df = pd.DataFrame(columns=['Date', 'Predicted Price'])
+    
+    # Extract last date from original DataFrame
     last_date = energy.index[-1]
+    
+    # Generate dates for the predicted prices and Assign the predicted prices and new dates to the DataFrame
     new_dates = [last_date + timedelta(days=i) for i in range(1, prediction_days + 1)]
     predicted_prices_df['Date'] = new_dates
     predicted_prices_df['Predicted Price'] = avg_pred
     
+    # Return predicted DataFrame
     return predicted_prices_df
 
 
